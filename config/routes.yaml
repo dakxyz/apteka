@@ -1,3 +1,11 @@
+main_page:
+    path: /
+    controller: \Xyz\Akulov\Apteka\Controller\IndexController::index
+
+user_registry:
+    path: /user/registry
+    controller: \Xyz\Akulov\Apteka\Controller\UserController::registry
+
 app_lucky_number:
     path: /lucky/number
     controller: \Xyz\Akulov\Apteka\Controller\LuckyController::number

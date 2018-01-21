@@ -1,0 +1,11 @@
+Xyz\Akulov\Apteka\Entity\User:
+    constraints:
+        - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity: email
+
+    properties:
+        email:
+            - NotBlank: ~
+            - Email: ~
+        passwordHash:
+            - NotBlank: ~
+            - Length: { min: 64, max: 64}
