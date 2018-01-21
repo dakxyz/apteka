@@ -6,6 +6,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Ramsey\Uuid\Uuid;
 use Redis;
+use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Xyz\Akulov\Common\Entity\Group;
 use Xyz\Akulov\Common\Entity\User;
@@ -57,8 +58,17 @@ class UserService implements UserServiceInterface
         }
 
         if ($result->count() > 0) {
-            dump($result); exit();
-            throw new ValidationException($result);
+            $violations = [];
+            /** @var ConstraintViolation $item */
+            foreach ($result as $item) {
+                $violations[] = [
+                    'message' => $item->getMessageTemplate(),
+                    'parameters' => $item->getParameters(),
+                    'property' => $item->getPropertyPath()
+                ];
+            }
+
+            throw new ValidationException($violations);
         }
 
         try {

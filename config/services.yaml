@@ -27,7 +27,7 @@ services:
     apteka.redis:
         class: Redis
         calls:
-            - [connect, ['172.19.0.1', '9602']]
+            - [connect, ['172.18.0.1', '9602']]
 
     Xyz\Akulov\Common\Service\UserService\UserServiceInterface:
         class: Xyz\Akulov\Common\Service\UserService\UserService

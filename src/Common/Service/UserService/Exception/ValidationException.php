@@ -16,4 +16,9 @@ class ValidationException extends Exception
     {
         $this->violations = $violations;
     }
+
+    public function getViolations(): array
+    {
+        return $this->violations;
+    }
 }

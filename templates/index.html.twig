@@ -4,9 +4,14 @@
 {% block body %}
     <div>
         <h1>Главная страница</h1>
+        Hello, your email is {{ user.email }}
         <ul>
-            <li>Авторизация</li>
-            <li><a href="/user/registry">Регистрация</a></li>
+            {% if user %}
+                <li>Загрузка файла</li>
+            {% else %}
+                <li><a href="/user/authorization">Авторизация</a></li>
+                <li><a href="/user/registry">Регистрация</a></li>
+            {% endif %}
         </ul>
     </div>
 {% endblock %}

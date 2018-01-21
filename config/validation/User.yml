@@ -1,4 +1,4 @@
-Xyz\Akulov\Apteka\Entity\User:
+Xyz\Akulov\Common\Entity\User:
     constraints:
         - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity: email
 

@@ -6,6 +6,10 @@ user_registry:
     path: /user/registry
     controller: \Xyz\Akulov\Apteka\Controller\UserController::registry
 
+user_authorization:
+    path: /user/authorization
+    controller: \Xyz\Akulov\Apteka\Controller\UserController::authorization
+
 app_lucky_number:
     path: /lucky/number
     controller: \Xyz\Akulov\Apteka\Controller\LuckyController::number
