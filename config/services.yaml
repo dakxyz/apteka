@@ -1,39 +1,94 @@
-# Put parameters here that don't need to change on each machine where the app is deployed
-# https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     locale: 'ru'
 
 services:
-    # default configuration for services in *this* file
     _defaults:
-        autowire: true      # Automatically injects dependencies in your services.
-        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
-        public: false       # Allows optimizing the container by removing unused services; this also means
-                            # fetching services directly from the container via $container->get() won't work.
-                            # The best practice is to be explicit about your dependencies anyway.
+        autowire: false
+        autoconfigure: false
+        public: false
 
-    # makes classes in src/ available to be used as services
-    # this creates a service per class whose id is the fully-qualified class name
-    Xyz\Akulov\Apteka\:
-        resource: '../src/Apteka/*'
-        exclude: '../src/Apteka/{Entity,Migrations,Tests}'
-
-    # controllers are imported separately to make sure services can be injected
-    # as action arguments even if you don't extend any base controller class
-    Xyz\Akulov\Apteka\Controller\:
-        resource: '../src/Apteka/Controller'
-        tags: ['controller.service_arguments']
-
-    apteka.redis:
+    apteka.infrastructure.redis:
         class: Redis
         calls:
             - [connect, ['172.18.0.1', '9602']]
 
-    Xyz\Akulov\Common\Service\UserService\UserServiceInterface:
-        class: Xyz\Akulov\Common\Service\UserService\UserService
-        public: true
+    apteka.symfony.extension.security.user_authenticator:
+        class: Xyz\Akulov\Symfony\Service\UserService\Security\UserAuthenticator
         arguments:
-          - '@Doctrine\ORM\EntityManagerInterface'
-          - '@validator.mapping.class_metadata_factory'
-          - '@apteka.redis'
+            - '@router'
+            - 'authorization'
 
+    apteka.symfony.extension.security.user_provider:
+        class: Xyz\Akulov\Symfony\Service\UserService\Security\UserProvider
+        arguments:
+            - '@apteka.service.user'
+
+    apteka.symfony.twig.extantion.units_of_information:
+        class: Xyz\Akulov\Symfony\TwigExtension\UnitsOfInformationExtension
+        tags:
+            - { name: twig.extension }
+
+    apteka.listener.user_controller_redirect:
+        class: Xyz\Akulov\Apteka\Symfony\Listener\UserControllerRedirect
+        arguments:
+            - '@apteka.service.user'
+            - '@router'
+        tags:
+            - {name: kernel.event_listener, event: kernel.controller, method: onKernelController}
+
+    apteka.controller.index:
+        public: true
+        class: Xyz\Akulov\Apteka\Symfony\Controller\IndexController
+
+    apteka.controller.user:
+        public: true
+        class: Xyz\Akulov\Apteka\Symfony\Controller\UserController
+        arguments:
+            - '@apteka.service.user'
+
+    apteka.controller.customer_personal_area.index:
+        public: true
+        class: Xyz\Akulov\Apteka\Symfony\Controller\CustomerPersonalArea\IndexController
+
+    apteka.controller.pharmacy_personal_area.index:
+        public: true
+        class: Xyz\Akulov\Apteka\Symfony\Controller\PharmacyPersonalArea\IndexController
+
+    apteka.controller.pharmacy_personal_area.stock:
+        public: true
+        class: Xyz\Akulov\Apteka\Symfony\Controller\PharmacyPersonalArea\StockController
+        arguments:
+            - '@apteka.service.pharmacy_stock'
+
+    apteka.service.user:
+        class: Xyz\Akulov\Symfony\Service\UserService\UserService
+        arguments:
+            - '@Doctrine\ORM\EntityManagerInterface'
+            - '@validator.mapping.class_metadata_factory'
+            - '@apteka.infrastructure.redis'
+
+    apteka.service.file:
+        class: Xyz\Akulov\Symfony\Service\FileService\FileService
+        arguments:
+            - '@Doctrine\ORM\EntityManagerInterface'
+            - '@filesystem'
+            - '@apteka.service.user'
+            - '@validator.mapping.class_metadata_factory'
+            - '/app/files'
+            - '@monolog.logger'
+        tags:
+            - {name: monolog.logger, channel: apteka.service.file}
+
+    apteka.service.task:
+        class: Xyz\Akulov\Symfony\Service\TaskService\TaskService
+        arguments:
+            - '@Doctrine\ORM\EntityManagerInterface'
+            - '@apteka.service.user'
+            - '@validator.mapping.class_metadata_factory'
+
+    apteka.service.pharmacy_stock:
+        class: Xyz\Akulov\Apteka\Symfony\Service\PharmacyStockService\PharmacyStockService
+        arguments:
+            - '@apteka.service.file'
+            - '@apteka.service.task'
+            - '@monolog.logger'

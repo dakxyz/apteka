@@ -1,6 +1,7 @@
-Xyz\Akulov\Common\Entity\User:
+Xyz\Akulov\Service\UserService\Entity\User:
     constraints:
-        - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity: email
+        - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity:
+            fields: [email]
 
     properties:
         email:

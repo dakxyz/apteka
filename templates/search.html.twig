@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Поиск лекарств{% endblock %}
+{% block body %}
+    <div>
+        <div><a href="{{ path('pharmacy_registration') }}">регистрация для представителя аптеки</a></div>
+        <div><a href="{{ path('customer_registration') }}">зарегистрироваться</a></div>
+        <div><a href="{{ path('authorization') }}">войти</a></div>
+    </div>
+    <div>
+        <h1>Поиск лекарств</h1>
+        <input style="min-width:50%;float: left;" value=""/>
+        <input type="submit">
+    </div>
+    <div>
+        <a href="{{ path('catalog') }}">каталог лекарств</a>
+    </div>
+{% endblock %}

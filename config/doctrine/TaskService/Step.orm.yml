@@ -1,0 +1,34 @@
+Xyz\Akulov\Service\TaskService\Entity\Step:
+    type: entity
+    table: steps
+
+    manyToOne:
+        task:
+            targetEntity: Xyz\Akulov\Service\TaskService\Entity\Task
+            inversedBy: steps
+            joinColumn:
+                nullable: true
+
+    id:
+        id:
+            type: integer
+            generator:
+              strategy: IDENTITY
+
+    fields:
+        createdAt:
+            type: datetime
+            nullable: true
+        updatedAt:
+            type: datetime
+            nullable: true
+        type:
+            type: string
+            length: 15
+        status:
+            type: string
+            length: 15
+        payload:
+            type: json_array
+            options:
+                jsonb: true

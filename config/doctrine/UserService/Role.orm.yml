@@ -1,0 +1,15 @@
+Xyz\Akulov\Service\UserService\Entity\Role:
+    type: entity
+    table: roles
+
+    id:
+        id:
+            type: integer
+            generator:
+              strategy: IDENTITY
+
+    fields:
+        name:
+            type: string
+            length: 31
+            unique: true

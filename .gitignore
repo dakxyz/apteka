@@ -1,5 +1,7 @@
 .env
-/public/bundles/
 /var/
 /vendor/
 /.idea/
+/files
+
+phpunit.xml

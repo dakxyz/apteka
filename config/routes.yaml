@@ -1,15 +1,44 @@
-main_page:
+search:
     path: /
-    controller: \Xyz\Akulov\Apteka\Controller\IndexController::index
+    defaults:
+        _controller: apteka.controller.index:search
 
-user_registry:
-    path: /user/registry
-    controller: \Xyz\Akulov\Apteka\Controller\UserController::registry
+catalog:
+    path: /catalog
+    defaults:
+        _controller: apteka.controller.index:catalog
 
-user_authorization:
-    path: /user/authorization
-    controller: \Xyz\Akulov\Apteka\Controller\UserController::authorization
+authorization:
+    path: /authorization
+    defaults:
+        _controller: apteka.controller.user:authorization
 
-app_lucky_number:
-    path: /lucky/number
-    controller: \Xyz\Akulov\Apteka\Controller\LuckyController::number
+customer_registration:
+    path: /registration
+    defaults:
+        _controller: apteka.controller.user:customerRegistration
+
+customer_personal_area_index:
+    path: /customer-personal-area/
+    defaults:
+        _controller: apteka.controller.customer_personal_area.index:index
+
+pharmacy_registration:
+    path: /pharmacy-registration
+    defaults:
+        _controller: apteka.controller.user:pharmacyRegistration
+
+pharmacy_personal_area_index:
+    path: /pharmacy-personal-area/
+    defaults:
+        _controller: apteka.controller.pharmacy_personal_area.index:index
+
+pharmacy_personal_area_stock_upload:
+    path: /pharmacy-personal-area/stock-upload
+    defaults:
+        _controller: apteka.controller.pharmacy_personal_area.stock:upload
+
+pharmacy_personal_area_stock_list:
+    path: /pharmacy-personal-area/stock-uploads-list
+    defaults:
+        _controller: apteka.controller.pharmacy_personal_area.stock:stocksUploadsList

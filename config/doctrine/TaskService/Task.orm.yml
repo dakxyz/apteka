@@ -1,0 +1,35 @@
+Xyz\Akulov\Service\TaskService\Entity\Task:
+    type: entity
+    table: tasks
+
+    oneToMany:
+        steps:
+            targetEntity: Xyz\Akulov\Service\TaskService\Entity\Step
+            mappedBy: task
+
+    id:
+        id:
+            type: integer
+            generator:
+              strategy: IDENTITY
+
+    fields:
+        createdAt:
+            type: datetime
+            nullable: true
+        updatedAt:
+            type: datetime
+            nullable: true
+        ownerId:
+            type: integer
+        type:
+            type: string
+            length: 15
+        payload:
+            type: json_array
+            options:
+                jsonb: true
+        status:
+            type: string
+            length: 15
+

@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Личный кабинет представителя аптеки{% endblock %}
+{% block body %}
+    <div>
+        <h1>Личный кабинет представителя аптеки</h1>
+    </div>
+    <div>
+        <ul>
+            <li><a href="{{ path('pharmacy_personal_area_stock_upload') }}">Загрузка файла</a></li>
+            <li><a href="{{ path('pharmacy_personal_area_stock_list') }}">Список загруженных файлов</a></li>
+        </ul>
+    </div>
+{% endblock %}

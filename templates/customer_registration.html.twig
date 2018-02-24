@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Регистрация{% endblock %}
+
+{% block body %}
+    {% if error is defined and error is not empty %}
+        <div>
+            <p>{{ error.message }}</p>
+        </div>
+        <div>
+            <ul>
+                {% for property, violations in error.validationMessages %}
+                    <li>{{ form_label(form[property]) }}</li>
+                    <ul>
+                        {% for message in violations %}
+                            <li>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    {{ form_end(form) }}
+{% endblock %}

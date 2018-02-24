@@ -1,12 +1,29 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        {% block stylesheets %}{% endblock %}
-    </head>
-    <body>
-        {% block body %}{% endblock %}
-        {% block javascripts %}{% endblock %}
-    </body>
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Welcome!{% endblock %}</title>
+    {% block stylesheets %}{% endblock %}
+</head>
+<body>
+{% if validation is defined and validation is not empty %}
+    <ul>
+        {% for property, messages in validation %}
+            <li>
+                {{ form_label(form[property]) }}
+                <ul>
+                    {% for message in messages %}
+                        <li style="background-color: indianred">
+                            {{ message }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+{% block body %}{% endblock %}
+{% block javascripts %}{% endblock %}
+</body>
 </html>

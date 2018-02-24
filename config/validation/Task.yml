@@ -1,0 +1,12 @@
+Xyz\Akulov\Service\TaskService\Entity\Step:
+    properties:
+        type:
+            - NotBlank: ~
+            - Length: { min: 1, max: 15}
+            - Regex:
+                pattern: '/^[a-z_]+$/i'
+        status:
+            - NotBlank: ~
+            - Length: { min: 1, max: 15}
+            - Regex:
+                pattern: '/^[a-z_]+$/i'

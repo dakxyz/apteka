@@ -1,0 +1,30 @@
+Xyz\Akulov\Service\UserService\Entity\User:
+    type: entity
+    table: users
+
+    manyToMany:
+        roles:
+            targetEntity: Role
+            joinTable:
+                name: users_roles
+
+    id:
+        id:
+            type: integer
+            generator:
+              strategy: IDENTITY
+
+    fields:
+        createdAt:
+            type: datetime
+            nullable: true
+        updatedAt:
+            type: datetime
+            nullable: true
+        email:
+            type: string
+            length: 63
+            unique: true
+        passwordHash:
+            type: string
+            length: 64

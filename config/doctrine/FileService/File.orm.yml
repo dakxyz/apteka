@@ -1,0 +1,43 @@
+Xyz\Akulov\Service\FileService\Entity\File:
+    type: entity
+    table: files
+
+    id:
+        id:
+            type: integer
+            generator:
+              strategy: IDENTITY
+
+    fields:
+        createdAt:
+            type: datetime
+            nullable: true
+        updatedAt:
+            type: datetime
+            nullable: true
+        name:
+            type: string
+            length: 255
+        extension:
+            type: string
+            length: 15
+        hash:
+            type: string
+            length: 64
+        purpose:
+            type: string
+            length: 15
+        ownerId:
+            type: integer
+        sourceFileName:
+            type: string
+            length: 255
+        sourceSize:
+            type: integer
+        sourceMimeType:
+            type: string
+            length: 127
+
+    uniqueConstraints:
+        unique_path_key:
+            columns: [ owner_id, purpose, name, extension]

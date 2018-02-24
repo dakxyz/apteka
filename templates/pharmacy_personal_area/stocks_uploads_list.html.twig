@@ -1,0 +1,68 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Личный кабинет представителя аптеки{% endblock %}
+{% block body %}
+    <div>
+        <h1>Личный кабинет представителя аптеки - список загрузок</h1>
+    </div>
+
+    {% if error is defined and error is not empty %}
+        <div>
+            <p>{{ error.message }}</p>
+        </div>
+        <div>
+            <ul>
+                {% for property, violations in error.validationMessages %}
+                    <li>{{ form_label(form[property]) }}</li>
+                    <ul>
+                        {% for message in violations %}
+                            <li>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    <table>
+        <tr>
+            <th>№</th>
+            <th>Время загрузки</th>
+            <th>Статус обработки</th>
+            <th>Файл</th>
+            <th>Размер</th>
+            <th>Этапы обработки</th>
+            <th>Резюме</th>
+        </tr>
+        {% if tasks is defined %}
+            {% for task in tasks %}
+                <tr>
+                    <td>{{ task.id }}</td>
+                    <td>{{ task.createdAt|date('d.m.Y H:i:s') }}</td>
+                    <td>{{ task.status }}</td>
+                    <td>
+                        {% if task.payload['sourceFileName'] is defined %}
+                            {{ task.payload['sourceFileName'] }}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if task.payload['sourceSize'] is defined %}
+                            {{ task.payload['sourceSize']|units_of_information }}
+                        {% endif %}
+                    </td>
+                    <td>
+                        <ul>
+                            <li style="background-color: #629755">Загрузка файла - завершено</li>
+                            <li style="background-color: #dd8888">Определение формата - ожидание</li>
+                            <li style="background-color: #dd8888">Разбор - ожидание</li>
+                        </ul>
+                    </td>
+                    <td>
+                        Файл находится в обработке, необходимо дождаться завершения процесса.
+                    </td>
+                </tr>
+            {% endfor %}
+        {% endif %}
+    </table>
+
+{% endblock %}
