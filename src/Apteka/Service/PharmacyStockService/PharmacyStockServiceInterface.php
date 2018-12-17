@@ -9,6 +9,7 @@ interface PharmacyStockServiceInterface
 {
     const FILE_PURPOSE = 'pharmacy_stock';
     const TASK_PHARMACY_PARSE = 'pharmacy_parse';
+    const STEP_GUESS_FORMAT = 'guess_format';
 
     const
         PAYLOAD_FILE_ID = 'fileId',
@@ -27,4 +28,6 @@ interface PharmacyStockServiceInterface
     ): VoidResponse;
 
     public function getTasks(?string $authKey): TasksResponse;
+
+    public function executeStepGuessFormat(int $taskId): VoidResponse;
 }

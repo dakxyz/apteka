@@ -109,4 +109,14 @@ class Task
     {
         return $this->steps;
     }
+
+    public function setStatus($status): bool
+    {
+        if (in_array($status, self::STATUSES)) {
+            $this->status = $status;
+            return true;
+        }
+
+        return false;
+    }
 }

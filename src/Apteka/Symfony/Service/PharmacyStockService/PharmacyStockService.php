@@ -124,4 +124,72 @@ class PharmacyStockService extends AbstractService implements PharmacyStockServi
     {
         return $this->tasksService->search($authKey, self::TASK_PHARMACY_PARSE);
     }
+
+    public function executeStepGuessFormat(int $taskId): VoidResponse
+    {
+        $result = $this->tasksService->getTaskById($taskId);
+        if (!$result->isSuccess()) {
+            $this->logger->notice('Unavailable task', [
+                'taskId' => $taskId,
+                'error'  => $result->getError(),
+            ]);
+
+            return VoidResponse::fail($result->getError());
+        }
+
+        $task = $result->getValue();
+        if ($task->getType() !== self::TASK_PHARMACY_PARSE) {
+            $this->logger->notice('Unavailable task type', [
+                'task' => $task
+            ]);
+
+            return VoidResponse::fail($this->taskFailedError());
+        }
+
+        $result = $this->tasksService->addStepToTask($taskId, self::STEP_GUESS_FORMAT, []);
+        if (!$result->isSuccess()) {
+            return $result;
+        }
+
+        $result = $this->tasksService->setTaskStatus($taskId, Task::STATUS_IN_PROGRESS);
+        if (!$result->isSuccess()) {
+            return $result;
+        }
+
+        $payload = $task->getPayload();
+        if (!isset($payload[self::PAYLOAD_FILE_ID])) {
+            $this->tasksService->setTaskStatus($taskId, Task::STATUS_FAIL);
+            $this->logger->notice('Incorrect task, not found fileId in payload', [
+                'task' => $task
+            ]);
+            return VoidResponse::fail($this->taskFailedError());
+        }
+
+        $result = $this->filesService->getFileById($payload[self::PAYLOAD_FILE_ID]);
+        if (!$result->isSuccess()) {
+            $this->tasksService->setTaskStatus($taskId, Task::STATUS_FAIL);
+            $this->logger->notice('File not found', [
+                'task' => $task
+            ]);
+            return VoidResponse::fail($result->getError());
+        }
+
+        $file = $result->getValue();
+        if ($file->getOwnerId() !== $task->getOwnerId()) {
+            $this->tasksService->setTaskStatus($taskId, Task::STATUS_FAIL);
+            $this->logger->notice('Access denied to file', [
+                'task' => $task,
+                'file' => $file
+            ]);
+
+            return VoidResponse::fail($this->taskFailedError());
+        }
+
+        return VoidResponse::success();
+    }
+
+    private function taskFailedError()
+    {
+        return $this->error('Задание не может быть выполнено.');
+    }
 }

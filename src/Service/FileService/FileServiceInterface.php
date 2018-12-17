@@ -32,4 +32,6 @@ interface FileServiceInterface
         int $limit = null,
         int $offset = 0
     ): FilesResponse;
+
+    public function getFileById(int $fileId): FileResponse;
 }

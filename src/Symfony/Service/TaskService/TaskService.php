@@ -4,6 +4,9 @@ namespace Xyz\Akulov\Symfony\Service\TaskService;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Xyz\Akulov\Service\Core\Criteria\Criteria;
+use Xyz\Akulov\Service\Core\Response\VoidResponse;
+use Xyz\Akulov\Service\TaskService\Entity\Step;
 use Xyz\Akulov\Service\TaskService\Entity\Task;
 use Xyz\Akulov\Service\TaskService\Response\TaskResponse;
 use Xyz\Akulov\Service\TaskService\Response\TasksResponse;
@@ -52,7 +55,7 @@ class TaskService extends AbstractService implements TaskServiceInterface
 
         if ($result->count() > 0) {
             return TaskResponse::fail($this->error(
-                'Не удалось создать задачу, переданы недопустимые параметры',
+                'Не удалось создать задачу, переданы недопустимые параметры.',
                 $result
             ));
         }
@@ -65,11 +68,7 @@ class TaskService extends AbstractService implements TaskServiceInterface
 
     public function search(
         ?string $authKey,
-        string $type = null,
-        string $status = null,
-        string $sortByTime = self::SORT_DIRECTION_ASC,
-        int $limit = null,
-        int $offset = 0
+        Criteria $criteria
     ): TasksResponse {
         if (!in_array($sortByTime, self::SORT_DIRECTIONS)) {
             return TasksResponse::fail($this->error('Запрос не может быть выполнен.'));
@@ -109,5 +108,47 @@ class TaskService extends AbstractService implements TaskServiceInterface
             );
 
         return TasksResponse::success($tasks);
+    }
+
+    public function getTaskById(int $taskId): TaskResponse
+    {
+        $task = $this->entityManager->getRepository(Task::class)->find($taskId);
+        if (!$task) {
+            return TaskResponse::fail($this->error('Не удалось найти задачу с таким id.'));
+        }
+
+        return TaskResponse::success($task);
+    }
+
+    public function setTaskStatus(int $taskId, string $status): VoidResponse
+    {
+        $result = $this->getTaskById($taskId);
+        if (!$result->isSuccess()) {
+            return VoidResponse::fail($result->getError());
+        }
+
+        $task = $result->getValue();
+        if (!$task->setStatus($status)) {
+            return VoidResponse::fail($this->error('Запрос не может быть выполнен.'));
+        }
+        $this->entityManager->flush();
+
+        return VoidResponse::success();
+    }
+
+    public function addStepToTask(int $taskId, string $type, array $payload): VoidResponse
+    {
+        $result = $this->getTaskById($taskId);
+        if (!$result->isSuccess()) {
+            return VoidResponse::fail($result->getError());
+        }
+
+        $task = $result->getValue();
+        $step = new Step($task, $type, $payload);
+
+        $this->entityManager->persist($step);
+        $this->entityManager->flush();
+
+        return VoidResponse::success();
     }
 }

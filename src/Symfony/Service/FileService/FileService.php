@@ -110,7 +110,7 @@ class FileService extends AbstractService implements FileServiceInterface
         $size = $this->getSizeLastFilesByTime($user->getId(), self::TIME_FOR_UPLOAD_LIMIT * 60 * 60);
         if ($size >= self::SIZE_FOR_UPLOAD_LIMIT * 1024 * 1024) {
             return FileResponse::fail($this->error(sprintf(
-                'Ограничение на загрузку файлов %sМб за %s часа',
+                'Ограничение на загрузку файлов %sМб за %s часа.',
                 self::SIZE_FOR_UPLOAD_LIMIT,
                 self::TIME_FOR_UPLOAD_LIMIT
             )));
@@ -155,6 +155,16 @@ class FileService extends AbstractService implements FileServiceInterface
             );
 
         return FilesResponse::success($files);
+    }
+
+    public function getFileById(int $fileId): FileResponse
+    {
+        $file = $this->entityManager->getRepository(File::class)->find($fileId);
+        if (!$file) {
+            return FileResponse::fail($this->error('Не удалось найти файл с таким id.'));
+        }
+
+        return FileResponse::success($file);
     }
 
     private function getSizeLastFilesByTime(int $userId, int $seconds): int
